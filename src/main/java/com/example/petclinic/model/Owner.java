@@ -3,12 +3,12 @@ package com.example.petclinic.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "owners")
 public class Owner {
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +28,17 @@ public class Owner {
 
     @Column(name="telephone")
     private long telephone;
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
+    }
+
+    @OneToMany(cascade =  CascadeType.ALL , mappedBy = "owner",fetch = FetchType.EAGER)
+    private List<Pet> pets;
+
 
     public Owner(){
 
