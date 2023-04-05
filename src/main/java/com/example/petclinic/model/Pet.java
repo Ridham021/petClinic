@@ -1,5 +1,8 @@
 package com.example.petclinic.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -7,6 +10,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "pets")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Pet {
 
 
@@ -19,17 +25,7 @@ public class Pet {
      private String name;
 
      @Column(name="birth_date")
-//     @Temporal(TemporalType.DATE)
-//     @DateTimeFormat(pattern = "yyyy/MM/dd")
     private String birthDate;
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
-    }
 
     @ManyToOne
     @JoinColumn(name="type_id")
@@ -37,6 +33,7 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name="owner_id")
+//    @JsonIgnore
     private Owner owner;
 
     public int getId() {
@@ -54,14 +51,15 @@ public class Pet {
     public void setName(String name) {
         this.name = name;
     }
+    public String getBirthDate() {
+        return birthDate;
+    }
 
-//    public Date getBirthDate() {
-//        return birthDate;
-//    }
-//
-//    public void setBirthDate(Date birthDate) {
-//        this.birthDate = birthDate;
-//    }
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
+
+
 
     public PetType getPetType() {
         return petType;

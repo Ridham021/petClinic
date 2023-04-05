@@ -1,6 +1,9 @@
 package com.example.petclinic.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -8,41 +11,47 @@ import java.util.List;
 
 @Entity
 @Table(name = "owners")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Owner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name= "first_name")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name="last_name")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name="address")
+    @Column(name = "address")
     private String address;
 
-    @Column(name="city")
+    @Column(name = "city")
     private String city;
 
-    @Column(name="telephone")
+    @Column(name = "telephone")
     private long telephone;
 
     public List<Pet> getPets() {
         return pets;
     }
+
     public void setPets(List<Pet> pets) {
         this.pets = pets;
     }
 
-    @OneToMany(cascade =  CascadeType.ALL , mappedBy = "owner",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", fetch = FetchType.EAGER)
+//    @JsonIgnore
     private List<Pet> pets;
 
 
-    public Owner(){
+    public Owner() {
 
     }
+
     public Owner(String firstName, String lastName, String address, String city, long telephone) {
         this.firstName = firstName;
         this.lastName = lastName;

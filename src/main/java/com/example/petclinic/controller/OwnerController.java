@@ -1,6 +1,8 @@
 package com.example.petclinic.controller;
 
 
+import com.example.petclinic.Handler.ResponseBodyObj;
+import com.example.petclinic.Handler.ResponseError;
 import com.example.petclinic.model.Owner;
 import com.example.petclinic.repository.OwnerRepository;
 import com.example.petclinic.service.OwnerService;
@@ -23,6 +25,7 @@ public class OwnerController {
 
     @GetMapping("")
     public ResponseEntity<List<Owner>> getAllOwners(){
+        System.out.println("Haa me yaaha hu");
           List<Owner> owners= ownerService.getOwners();
         return new ResponseEntity<List<Owner>>(owners, HttpStatus.OK);
     }
@@ -52,19 +55,32 @@ public class OwnerController {
         return "deleted";
     }
 
-    @PutMapping("/{ownerId}")
-    public Owner updateOwner(@PathVariable("ownerId") int ownerId , @RequestBody Owner owner){
+    @PutMapping("/{id}")
+    public Owner updateOwner(@PathVariable("id") int ownerId ,  @RequestBody Owner owner){
 
         Owner currentOwner = ownerService.getOwner(ownerId);
+        System.out.println(owner);
+        owner.setId(0);
+        ownerService.saveOwner(owner);
         currentOwner.setAddress(owner.getAddress());
         currentOwner.setCity(owner.getCity());
         currentOwner.setTelephone(owner.getTelephone());
         currentOwner.setLastName(owner.getLastName());
         currentOwner.setFirstName(owner.getFirstName());
 
-        return currentOwner;
+        return ownerService.getOwner(currentOwner.getId());
 
     }
+    @ExceptionHandler(value = jakarta.persistence.NoResultException.class)
+    public ResponseEntity<ResponseBodyObj> handleNullPointer(){
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(value = java.sql.SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ResponseError> handleIntegrity(){
+        ResponseError error = new ResponseError(HttpStatus.BAD_REQUEST, "Please match the constraunts");
+        return new ResponseEntity<ResponseError>(error,HttpStatus.BAD_REQUEST);
+    }
+
 
 
 

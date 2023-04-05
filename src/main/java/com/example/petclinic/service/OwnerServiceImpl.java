@@ -1,5 +1,7 @@
 package com.example.petclinic.service;
 
+import com.example.petclinic.Handler.OwnerException;
+import com.example.petclinic.Handler.OwnerExceptionHandler;
 import com.example.petclinic.model.Owner;
 import com.example.petclinic.repository.OwnerRepository;
 import jakarta.transaction.Transactional;
@@ -7,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class OwnerServiceImpl implements OwnerService{
@@ -16,7 +20,18 @@ public class OwnerServiceImpl implements OwnerService{
     @Override
     @Transactional
     public Owner getOwner(int id) {
-        return ownerRepository.findById(id).get();
+        Optional<Owner> owner = ownerRepository.findById(id);
+        System.out.println("=============================================================================");
+        if(!owner.isEmpty())
+        {
+            return ownerRepository.findById(id).get();
+
+        }
+        else {
+            throw new OwnerExceptionHandler("This is not found");
+
+        }
+
     }
 
     @Override

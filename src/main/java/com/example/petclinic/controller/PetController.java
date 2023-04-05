@@ -20,8 +20,10 @@ public class PetController {
 
     @GetMapping("")
     public ResponseEntity<List<Pet>> getAllPets(){
+        System.out.println("Haa me yaaha hu");
 
         System.out.println(petsService.getPets());
+
         return new ResponseEntity<List<Pet>>(petsService.getPets(), HttpStatus.OK);
     }
 
@@ -38,6 +40,20 @@ public class PetController {
         System.out.println(pet.toString());
 
         return petsService.savePet(pet);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Pet> updatePet(@PathVariable("id") int petId, @RequestBody Pet pet){
+
+        Pet p = petsService.getPet(petId);
+//        p.setId(0);
+        p.setName(pet.getName());
+        p.setBirthDate(pet.getBirthDate());
+        System.out.println(p);
+        petsService.savePet(p);
+
+        return new ResponseEntity<Pet>(petsService.getPet(p.getId()),HttpStatus.OK);
+
     }
 
     @DeleteMapping("/{petId}")
